@@ -1,9 +1,9 @@
-import React from 'react'
-
-function Dashboard() {
+export default function Dashboard() {
   return (
-    <div>Dashboard</div>
-  )
+    <div className="p-10">
+      <h1 className="text-3xl font-bold">
+        AI Mock Interview Dashboard
+      </h1>
+    </div>
+  );
 }
-
-export default Dashboard
