@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
-import { Menu, X } from "lucide-react";
+import { Menu, X, BrainCircuit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const links = [
@@ -24,87 +24,93 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="border-b bg-white">
+    <nav className="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="text-lg font-bold text-slate-900">
-            AI Mock Interview
+
+        {/* Logo + Nav links */}
+        <div className="flex items-center gap-8">
+          <Link href="/" className="flex items-center gap-2 text-lg font-bold text-slate-900 shrink-0">
+            <BrainCircuit className="h-5 w-5 text-violet-600" />
+            <span>AI Mock Interview</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-1">
             {links.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className={`font-medium px-2 py-1 rounded-md transition-colors ${
+                className={`relative text-sm font-medium px-3 py-2 rounded-md transition-colors ${
                   isActive(l.href)
-                    ? "text-slate-900 bg-slate-100"
-                    : "text-slate-700 hover:text-violet-600"
+  ? "text-violet-700"           // remove bg-violet-50
+  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
                 }`}
               >
                 {l.label}
+                {isActive(l.href) && (
+                  <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-violet-600 rounded-full" />
+                )}
               </Link>
             ))}
           </div>
         </div>
 
+        {/* Right side */}
         <div className="flex items-center gap-3">
           <Link href="/dashboard/new" className="hidden sm:inline-block">
-            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-              Create Interview
+            <Button
+              size="sm"
+              className="bg-violet-600 hover:bg-violet-700 text-white font-semibold shadow-sm"
+            >
+              + Create Interview
             </Button>
           </Link>
-
-          <div className="md:hidden">
-            <button
-              aria-label="Toggle menu"
-              aria-expanded={open}
-              onClick={() => setOpen((v) => !v)}
-              className="inline-flex items-center justify-center rounded-md p-2 text-slate-700 hover:bg-slate-100"
-            >
-              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
-          </div>
 
           <div className="hidden md:block">
             <UserButton />
           </div>
+
+          {/* Mobile menu toggle */}
+          <button
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-slate-600 hover:bg-slate-100 transition-colors"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
+      </div>
 
-        {/* Mobile menu */}
-        {open && (
-          <div className="absolute left-0 top-16 w-full border-t bg-white md:hidden">
-            <div className="mx-auto max-w-7xl px-4 py-4">
-              <div className="flex flex-col gap-2">
-                {links.map((l) => (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    onClick={() => setOpen(false)}
-                    className={`block rounded-md px-3 py-2 text-base font-medium ${
-                      isActive(l.href)
-                        ? "text-slate-900 bg-slate-100"
-                        : "text-slate-700 hover:text-violet-600"
-                    }`}
-                  >
-                    {l.label}
-                  </Link>
-                ))}
+      {/* Mobile dropdown — outside the flex row */}
+      {open && (
+        <div className="md:hidden border-t border-slate-200 bg-white">
+          <div className="mx-auto max-w-7xl px-4 py-3 flex flex-col gap-1">
+            {links.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setOpen(false)}
+                className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                  isActive(l.href)
+                    ? "text-violet-700 bg-violet-50"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                }`}
+              >
+                {l.label}
+              </Link>
+            ))}
 
-                <Link href="/dashboard/new" onClick={() => setOpen(false)}>
-                  <Button size="sm" className="w-full bg-blue-600 text-white">
-                    Create Interview
-                  </Button>
-                </Link>
-
-                <div className="pt-2">
-                  <UserButton />
-                </div>
-              </div>
+            <div className="pt-2 border-t border-slate-100 mt-1 flex items-center justify-between">
+              <Link href="/dashboard/new" onClick={() => setOpen(false)}>
+                <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white font-semibold">
+                  + Create Interview
+                </Button>
+              </Link>
+              <UserButton />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </nav>
   );
 }
