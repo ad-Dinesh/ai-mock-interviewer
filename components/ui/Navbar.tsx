@@ -39,17 +39,17 @@ export default function Navbar() {
               <Link
                 key={l.href}
                 href={l.href}
-                className={`relative text-sm font-medium px-3 py-2 rounded-md transition-colors ${
-                  isActive(l.href)
-  ? "text-violet-700"           // remove bg-violet-50
-  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                }`}
+                className={`relative text-sm font-medium px-3 py-2 rounded-md transition-colors ${isActive(l.href)
+                    ? "text-violet-700"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  }`}
               >
                 {l.label}
                 {isActive(l.href) && (
                   <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-violet-600 rounded-full" />
                 )}
               </Link>
+
             ))}
           </div>
         </div>
@@ -90,11 +90,10 @@ export default function Navbar() {
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
-                  isActive(l.href)
+                className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${isActive(l.href)
                     ? "text-violet-700 bg-violet-50"
                     : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                }`}
+                  }`}
               >
                 {l.label}
               </Link>
