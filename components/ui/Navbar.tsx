@@ -4,14 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
-import { Menu, X, BrainCircuit } from "lucide-react";
+import { BrainCircuit, Menu, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/dashboard/questions", label: "Questions" },
   { href: "/dashboard/history", label: "History" },
-  { href: "/how-it-works", label: "How it Works?" },
+  { href: "/how-it-works", label: "How It Works" },
 ];
 
 export default function Navbar() {
@@ -20,91 +21,128 @@ export default function Navbar() {
 
   const isActive = (href: string) => {
     if (!pathname) return false;
+    if (href === "/dashboard") return pathname === href;
+
     return pathname === href || pathname.startsWith(href + "/");
   };
 
   return (
-    <nav className="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm">
+    <nav
+      aria-label="Primary navigation"
+      className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/85"
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-
-        {/* Logo + Nav links */}
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 text-lg font-bold text-slate-900 shrink-0">
-            <BrainCircuit className="h-5 w-5 text-violet-600" />
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="flex shrink-0 items-center gap-2 text-lg font-bold text-slate-900 transition-colors hover:text-violet-700"
+          >
+            <span className="flex size-8 items-center justify-center rounded-lg bg-violet-50 text-violet-700 ring-1 ring-violet-100">
+              <BrainCircuit className="size-5" aria-hidden="true" />
+            </span>
             <span>AI Mock Interview</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-1">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={`relative text-sm font-medium px-3 py-2 rounded-md transition-colors ${isActive(l.href)
-                    ? "text-violet-700"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                  }`}
-              >
-                {l.label}
-                {isActive(l.href) && (
-                  <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-violet-600 rounded-full" />
-                )}
-              </Link>
+          <div className="hidden items-center gap-1 md:flex">
+            {links.map((link) => {
+              const active = isActive(link.href);
 
-            ))}
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "relative rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    active
+                      ? "text-violet-700"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  )}
+                >
+                  {link.label}
+                  {active && (
+                    <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-violet-600" />
+                  )}
+                </Link>
+              );
+            })}
           </div>
         </div>
 
-        {/* Right side */}
         <div className="flex items-center gap-3">
-          <Link href="/dashboard/new" className="hidden sm:inline-block">
-            <Button
-              size="sm"
-              className="bg-violet-600 hover:bg-violet-700 text-white font-semibold shadow-sm"
-            >
-              + Create Interview
-            </Button>
-          </Link>
+          <Button
+            asChild
+            size="sm"
+            className="hidden bg-violet-600 font-semibold text-white shadow-sm hover:bg-violet-700 sm:inline-flex"
+          >
+            <Link href="/dashboard/new">
+              <Plus className="size-4" aria-hidden="true" />
+              Create Interview
+            </Link>
+          </Button>
 
           <div className="hidden md:block">
             <UserButton />
           </div>
 
-          {/* Mobile menu toggle */}
-          <button
-            aria-label="Toggle menu"
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-            className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-slate-600 hover:bg-slate-100 transition-colors"
+            aria-controls="mobile-navigation"
+            onClick={() => setOpen((value) => !value)}
+            className="text-slate-600 hover:bg-slate-100 md:hidden"
           >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+            {open ? (
+              <X className="size-5" aria-hidden="true" />
+            ) : (
+              <Menu className="size-5" aria-hidden="true" />
+            )}
+          </Button>
         </div>
       </div>
 
-      {/* Mobile dropdown — outside the flex row */}
       {open && (
-        <div className="md:hidden border-t border-slate-200 bg-white">
-          <div className="mx-auto max-w-7xl px-4 py-3 flex flex-col gap-1">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setOpen(false)}
-                className={`block rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${isActive(l.href)
-                    ? "text-violet-700 bg-violet-50"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                  }`}
-              >
-                {l.label}
-              </Link>
-            ))}
+        <div
+          id="mobile-navigation"
+          className="border-t border-slate-200 bg-white md:hidden"
+        >
+          <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
+            {links.map((link) => {
+              const active = isActive(link.href);
 
-            <div className="pt-2 border-t border-slate-100 mt-1 flex items-center justify-between">
-              <Link href="/dashboard/new" onClick={() => setOpen(false)}>
-                <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white font-semibold">
-                  + Create Interview
-                </Button>
-              </Link>
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "block rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                    active
+                      ? "bg-violet-50 text-violet-700"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+
+            <div className="mt-1 flex items-center justify-between border-t border-slate-100 pt-3">
+              <Button
+                asChild
+                size="sm"
+                className="bg-violet-600 font-semibold text-white hover:bg-violet-700"
+              >
+                <Link href="/dashboard/new" onClick={() => setOpen(false)}>
+                  <Plus className="size-4" aria-hidden="true" />
+                  Create Interview
+                </Link>
+              </Button>
               <UserButton />
             </div>
           </div>
