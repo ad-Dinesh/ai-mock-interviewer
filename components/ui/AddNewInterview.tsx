@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -38,8 +39,12 @@ export default function AddNewInterview() {
 
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Create New Interview</DialogTitle>
-        </DialogHeader>
+  <DialogTitle>Create New Interview</DialogTitle>
+
+  <DialogDescription>
+    Enter the job details below. AI will generate interview questions based on your role and experience.
+  </DialogDescription>
+</DialogHeader>
 
         <div className="space-y-5 mt-4">
 
