@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { generateInterviewQuestions } from "@/lib/ai";
+
 import { INTERVIEW_PROMPT } from "@/lib/Prompt";
 
 export default function AddNewInterview() {
@@ -24,19 +24,24 @@ export default function AddNewInterview() {
     const [experience, setExperience] = useState("");
 
    const onGenerate = async () => {
-  if (!jobPosition || !jobDesc || !experience) {
-    alert("Please fill all fields");
-    return;
-  }
-
   const FINAL_PROMPT = INTERVIEW_PROMPT
     .replace("{jobPosition}", jobPosition)
     .replace("{jobDescription}", jobDesc)
     .replace("{jobExperience}", experience);
 
-  const response = await generateInterviewQuestions(FINAL_PROMPT);
+  const response = await fetch("/api/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      prompt: FINAL_PROMPT,
+    }),
+  });
 
-  console.log(response);
+  const data = await response.json();
+
+  console.log(data.result);
 };
 
 
