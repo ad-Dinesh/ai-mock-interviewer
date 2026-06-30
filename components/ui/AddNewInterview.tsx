@@ -13,6 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { generateInterviewQuestions } from "@/lib/ai";
+import { INTERVIEW_PROMPT } from "@/lib/Prompt";
 
 export default function AddNewInterview() {
     const [open, setOpen] = useState(false);
@@ -21,15 +23,22 @@ export default function AddNewInterview() {
     const [jobDesc, setJobDesc] = useState("");
     const [experience, setExperience] = useState("");
 
-    const onGenerate = () => {
-        console.log({
-            jobPosition,
-            jobDesc,
-            experience,
-        });
+   const onGenerate = async () => {
+  if (!jobPosition || !jobDesc || !experience) {
+    alert("Please fill all fields");
+    return;
+  }
 
-        setOpen(false);
-    };
+  const FINAL_PROMPT = INTERVIEW_PROMPT
+    .replace("{jobPosition}", jobPosition)
+    .replace("{jobDescription}", jobDesc)
+    .replace("{jobExperience}", experience);
+
+  const response = await generateInterviewQuestions(FINAL_PROMPT);
+
+  console.log(response);
+};
+
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
