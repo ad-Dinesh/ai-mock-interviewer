@@ -14,8 +14,13 @@ export async function POST(req: Request) {
       contents: prompt,
     });
 
+    const cleanResponse = (response.text ?? "")
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
     return NextResponse.json({
-      result: response.text,
+      result: cleanResponse,
     });
   } catch (error) {
     console.error(error);
