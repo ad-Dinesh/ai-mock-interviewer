@@ -41,7 +41,18 @@ export default function AddNewInterview() {
 
   const data = await response.json();
 
-  console.log(data.result);
+await fetch("/api/interview", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    jobPosition,
+    jobDesc,
+    experience,
+    jsonMockResp: data.result,
+  }),
+});
 };
 
 
