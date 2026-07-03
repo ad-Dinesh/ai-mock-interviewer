@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { MockInterview } from "@/utils/schema";
 import { eq } from "drizzle-orm";
+import QuestionCard from "@/components/ui/QuestionCard";
 
 interface Props {
   params: Promise<{
@@ -10,8 +11,7 @@ interface Props {
 
 export default async function InterviewPage({ params }: Props) {
   const { interviewId } = await params;
-  
-  
+
   const interview = await db
     .select()
     .from(MockInterview)
@@ -22,23 +22,16 @@ export default async function InterviewPage({ params }: Props) {
       .replace("```json", "")
       .replace("```", "")
   );
+
   const currentQuestion = questions[0];
 
- return (
-  <div className="max-w-4xl mx-auto p-10">
-    <h1 className="text-3xl font-bold mb-6">
-      Mock Interview
-    </h1>
-
-    <div className="border rounded-xl p-6 shadow">
-      <h2 className="text-xl font-semibold mb-4">
-        Question 1 of {questions.length}
-      </h2>
-
-      <p className="text-lg">
-        {currentQuestion.question}
-      </p>
+  return (
+    <div className="max-w-5xl mx-auto p-10">
+      <QuestionCard
+        question={currentQuestion.question}
+        currentQuestion={0}
+        totalQuestions={questions.length}
+      />
     </div>
-  </div>
-);
+  );
 }
