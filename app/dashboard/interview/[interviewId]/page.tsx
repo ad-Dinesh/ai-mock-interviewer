@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { MockInterview } from "@/utils/schema";
 import { eq } from "drizzle-orm";
 import QuestionCard from "@/components/ui/QuestionCard";
+import RecordAnswer from "@/components/ui/RecordAnswer";
 
 interface Props {
   params: Promise<{
@@ -26,12 +27,18 @@ export default async function InterviewPage({ params }: Props) {
   const currentQuestion = questions[0];
 
   return (
-    <div className="max-w-5xl mx-auto p-10">
+    <div className="max-w-7xl mx-auto p-10">
+    <div className="grid md:grid-cols-2 gap-8">
+
       <QuestionCard
         question={currentQuestion.question}
         currentQuestion={0}
         totalQuestions={questions.length}
       />
+
+      <RecordAnswer />
+
     </div>
+  </div>
   );
 }
