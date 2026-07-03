@@ -3,6 +3,7 @@ import { MockInterview } from "@/utils/schema";
 
 export default async function Home() {
   const result = await db.select().from(MockInterview);
+  
 
 return (
   <div>
