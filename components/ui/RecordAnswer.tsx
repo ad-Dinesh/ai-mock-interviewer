@@ -3,9 +3,11 @@
 import Webcam from "react-webcam";
 import { Button } from "@/components/ui/button";
 import { Mic, StopCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 import useSpeechToText from "react-hook-speech-to-text";
 
 export default function RecordAnswer() {
+  const [userAnswer, setUserAnswer] = useState("");
   const {
     error,
     interimResult,
@@ -17,6 +19,14 @@ export default function RecordAnswer() {
     continuous: true,
     useLegacyResults: false,
   });
+
+  useEffect(() => {
+    const transcript = results
+      .map((r: any) => r.transcript)
+      .join(" ");
+
+    setUserAnswer(transcript);
+  }, [results]);
   return (
     <div className="border rounded-xl p-5 flex flex-col items-center">
       <Webcam
@@ -41,6 +51,9 @@ export default function RecordAnswer() {
 
         <p className="text-gray-500">{interimResult}</p>
       </div>
+      <p className="mt-4 text-sm">
+        {userAnswer}
+      </p>
 
       <Button
         className="mt-5 w-full"
