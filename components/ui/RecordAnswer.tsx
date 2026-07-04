@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Mic, StopCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import useSpeechToText from "react-hook-speech-to-text";
+import { useUser } from "@clerk/nextjs";
 
 interface Props {
   question: string;
@@ -18,6 +19,8 @@ export default function RecordAnswer({
   interviewId,
 }: Props) {
   const [userAnswer, setUserAnswer] = useState("");
+  const { user } = useUser();
+
   const {
     error,
     interimResult,
@@ -39,24 +42,27 @@ export default function RecordAnswer({
   }, [results]);
 
   const saveAnswer = async () => {
-    if (!userAnswer) return;
+  if (!userAnswer) return;
+  
 
-    const res = await fetch("/api/feedback", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        question,
-        correctAnswer,
-        userAnswer,
-        interviewId,
-      }),
-    });
+  const res = await fetch("/api/feedback", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      interviewId,
+      question,
+      correctAnswer,
+      userAnswer,
+      userEmail: user?.primaryEmailAddress?.emailAddress,
+    }),
+  });
 
-    const data = await res.json();
-    console.log(data);
-  };
+  const data = await res.json();
+
+  console.log(data);
+};
 
   return (
     <div className="border rounded-xl p-5 flex flex-col items-center">
