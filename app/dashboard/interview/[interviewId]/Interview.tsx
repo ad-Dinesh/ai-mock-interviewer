@@ -31,7 +31,11 @@ export default function Interview({ questions }: Props) {
           totalQuestions={questions.length}
         />
 
-        <RecordAnswer />
+        <RecordAnswer
+  question={questions[activeQuestion].question}
+  correctAnswer={questions[activeQuestion].answer}
+  interviewId={1}
+/>
 
       </div>
 
