@@ -2,8 +2,17 @@
 
 import { useState } from "react";
 import QuestionCard from "@/components/ui/QuestionCard";
-import RecordAnswer from "@/components/ui/RecordAnswer";
+
 import { Button } from "@/components/ui/button";
+import dynamic from "next/dynamic";
+
+const RecordAnswer = dynamic(
+  () => import("@/components/ui/RecordAnswer"),
+  {
+    ssr: false,
+  }
+);
+
 
 interface Props {
   questions: any[];
