@@ -1,15 +1,23 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
+import { db } from "@/lib/db";
+import { UserAnswer } from "@/utils/schema";
 
 const ai = new GoogleGenAI({
-  apiKey: process.env.GOOGLE_GEMINI_API_KEY!,
+    apiKey: process.env.GOOGLE_GEMINI_API_KEY!,
 });
 
 export async function POST(req: Request) {
-  try {
-    const { question, correctAnswer, userAnswer } = await req.json();
+    try {
+        const {
+            interviewId,
+            question,
+            correctAnswer,
+            userAnswer,
+            userEmail,
+        } = await req.json();
 
-    const prompt = `
+        const prompt = `
 You are an interview evaluator.
 
 Question:
@@ -31,25 +39,38 @@ Return ONLY valid JSON.
 }
 `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-    });
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+        });
 
-    let text = response.text ?? "";
+        let text = response.text ?? "";
 
-    text = text
-      .replace("```json", "")
-      .replace("```", "")
-      .trim();
+        text = text
+            .replace("```json", "")
+            .replace("```", "")
+            .trim();
 
-    return NextResponse.json(JSON.parse(text));
-  } catch (err) {
-    console.log(err);
+        const result = JSON.parse(text);
 
-    return NextResponse.json(
-      { error: "Failed" },
-      { status: 500 }
-    );
-  }
+        // Save into Database
+        await db.insert(UserAnswer).values({
+            mockIdRef: interviewId,
+            question,
+            correctAnswer,
+            userAnswer,
+            feedback: result.feedback,
+            rating: result.rating,
+            userEmail,
+        });
+
+        return NextResponse.json(result);
+    } catch (err) {
+        console.log(err);
+
+        return NextResponse.json(
+            { error: "Failed" },
+            { status: 500 }
+        );
+    }
 }
