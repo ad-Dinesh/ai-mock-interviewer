@@ -19,6 +19,7 @@ export default function RecordAnswer({
   interviewId,
 }: Props) {
   const [userAnswer, setUserAnswer] = useState("");
+
   const { user } = useUser();
 
   const {
@@ -42,27 +43,41 @@ export default function RecordAnswer({
   }, [results]);
 
   const saveAnswer = async () => {
-  if (!userAnswer) return;
-  
+    if (!userAnswer) return;
 
-  const res = await fetch("/api/feedback", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      interviewId,
-      question,
-      correctAnswer,
-      userAnswer,
-      userEmail: user?.primaryEmailAddress?.emailAddress,
-    }),
-  });
+    // Gemini Feedback API
+    const feedbackRes = await fetch("/api/feedback", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        question,
+        correctAnswer,
+        userAnswer,
+      }),
+    });
 
-  const data = await res.json();
+    const data = await feedbackRes.json();
 
-  console.log(data);
-};
+    console.log(data);
+
+    // Save into DB
+    await fetch("/api/interview", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        mockIdRef: interviewId,
+        question,
+        correctAnswer,
+        userAnswer,
+        feedback: data.feedback,
+        rating: data.rating,
+      }),
+    });
+  };
 
   return (
     <div className="border rounded-xl p-5 flex flex-col items-center">
@@ -75,14 +90,12 @@ export default function RecordAnswer({
         }}
       />
 
-      <div className="w-full mt-5 p-3 border rounded-lg min-h-25 bg-gray-50">
-        {results.map((result, index) => (
-          <p key={index}>
-            {typeof result === "string" ? result : result.transcript}
-          </p>
+      <div className="w-full mt-5 p-3 border rounded-lg min-h-[100px] bg-gray-50">
+        {results.map((result: any, index) => (
+          <p key={index}>{result.transcript}</p>
         ))}
 
-        {error && <p className="text-red-500 mt-2">{error}</p>}
+        {error && <p className="text-red-500">{error}</p>}
 
         <p className="text-gray-500">{interimResult}</p>
       </div>
