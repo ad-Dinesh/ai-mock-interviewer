@@ -23,5 +23,9 @@ export default async function InterviewPage({ params }: Props) {
       .replace("```", "")
   );
 
-  return <Interview questions={questions} />;
-}
+return (
+  <Interview
+    questions={questions}
+    interviewId={Number(interviewId)}
+  />
+);}

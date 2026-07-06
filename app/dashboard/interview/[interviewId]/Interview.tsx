@@ -18,9 +18,10 @@ const RecordAnswer = dynamic(
 
 interface Props {
   questions: any[];
+  interviewId: number;
 }
 
-export default function Interview({ questions }: Props) {
+export default function Interview({ questions, interviewId }: Props) {
   const [activeQuestion, setActiveQuestion] = useState(0);
   const router = useRouter();
 
@@ -37,7 +38,7 @@ export default function Interview({ questions }: Props) {
         <RecordAnswer
   question={questions[activeQuestion].question}
   correctAnswer={questions[activeQuestion].answer}
-  interviewId={1}
+  interviewId={interviewId}
 />
 
       </div>
@@ -55,7 +56,7 @@ export default function Interview({ questions }: Props) {
         {activeQuestion === questions.length - 1 ? (
   <Button
     onClick={() => {
-      router.push("/dashboard/interview/1/feedback");
+      router.push(`/dashboard/interview/${interviewId}/feedback`);
     }}
   >
     Finish Interview
