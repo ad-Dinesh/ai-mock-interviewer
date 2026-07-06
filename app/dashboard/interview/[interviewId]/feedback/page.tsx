@@ -66,9 +66,22 @@ export default async function FeedbackPage({ params }: Props) {
                     : "Needs Improvement";
 
     return (
-        <div className="bg-slate-50 pb-12">
+        <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.12),transparent_32%),linear-gradient(180deg,#f8fafc_0%,#eff6ff_100%)] pb-12">
 
-            <div className="max-w-7xl mx-auto px-6 py-10">
+            <div className="mx-auto max-w-7xl px-6 py-10 md:py-12">
+
+                <div className="mb-8 space-y-3">
+                    <p className="text-sm font-semibold uppercase tracking-[0.28em] text-indigo-600">
+                        Interview Review
+                    </p>
+                    <h1 className="text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">
+                        Feedback that is easy to scan and act on.
+                    </h1>
+                    <p className="max-w-3xl text-base leading-7 text-slate-600 md:text-lg">
+                        Review the score, see what you answered well, and focus on
+                        the questions that need another pass.
+                    </p>
+                </div>
 
                 {/* Hero */}
 
@@ -86,7 +99,7 @@ export default async function FeedbackPage({ params }: Props) {
 
                 {/* Summary */}
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
 
                     <SummaryCard
                         title="Questions"
@@ -113,29 +126,40 @@ export default async function FeedbackPage({ params }: Props) {
 
                 {/* Cards */}
 
-                <div className="space-y-8 mt-10">
-
-                    {feedbackList.map((item, index) => (
-
-                        <FeedbackAccordion
-                            key={item.id}
-                            item={item}
-                            index={index}
-                        />
-
-                    ))}
-
+                <div className="mt-10 space-y-8">
+                    {feedbackList.length > 0 ? (
+                        feedbackList.map((item, index) => (
+                            <FeedbackAccordion
+                                key={item.id}
+                                item={item}
+                                index={index}
+                            />
+                        ))
+                    ) : (
+                        <div className="rounded-3xl border border-dashed border-slate-300 bg-white/80 p-10 text-center shadow-sm">
+                            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-500">
+                                <BrainCircuit className="h-8 w-8" />
+                            </div>
+                            <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
+                                No feedback yet
+                            </h2>
+                            <p className="mx-auto mt-2 max-w-xl text-slate-600">
+                                Complete an interview to generate answer-by-answer
+                                feedback and a performance score.
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Buttons */}
 
-                <div className="flex flex-wrap justify-center gap-5 mt-12">
+                <div className="mt-12 flex flex-wrap justify-center gap-4">
 
                     <Link href="/dashboard">
 
                         <Button
                             variant="outline"
-                            className="rounded-xl"
+                            className="rounded-xl border-slate-300 bg-white px-6 text-slate-700 hover:bg-slate-50"
                         >
                             <ArrowLeft className="mr-2 h-4 w-4" />
 
@@ -149,7 +173,7 @@ export default async function FeedbackPage({ params }: Props) {
                         href={`/dashboard/interview/${interviewId}`}
                     >
 
-                        <Button className="rounded-xl">
+                        <Button className="rounded-xl bg-slate-950 px-6 text-white shadow-lg shadow-slate-950/20 hover:bg-slate-800">
 
                             <RotateCcw className="mr-2 h-4 w-4" />
 

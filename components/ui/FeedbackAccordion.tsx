@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useState } from "react";
 import {
   ChevronDown,
@@ -8,11 +9,18 @@ import {
   MessageSquare,
   CheckCircle2,
   CircleDashed,
-  Star,
 } from "lucide-react";
 
+interface FeedbackItem {
+  question: string;
+  correctAnswer: string;
+  userAnswer: string;
+  feedback: string | null;
+  rating: string | number | null;
+}
+
 interface Props {
-  item: any;
+  item: FeedbackItem;
   index: number;
 }
 
@@ -58,61 +66,66 @@ export default function FeedbackAccordion({
   const badge = getBadge();
 
   return (
-    <div className="rounded-2xl border bg-white shadow-sm overflow-hidden">
+    <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-shadow duration-300 hover:shadow-lg">
 
       <button
+        type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex justify-between items-center p-6"
+        className="flex w-full items-center justify-between gap-6 p-6 text-left"
       >
-        <div>
+        <div className="min-w-0">
 
-          <h2 className="text-xl font-bold">
-            Question {index + 1}
-          </h2>
+          <div className="flex items-center gap-3">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">
+              {index + 1}
+            </span>
 
-          <p className="text-gray-500 mt-1">
+            <h2 className="truncate text-xl font-semibold tracking-tight text-slate-950">
+              Question {index + 1}
+            </h2>
+          </div>
+
+          <p className="mt-2 text-sm text-slate-500">
             {badge.text}
           </p>
 
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-3">
 
           <span
-            className={`px-3 py-1 rounded-full text-sm font-semibold ${badge.color}`}
+            className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${badge.color}`}
           >
             {item.userAnswer ? `${rating}/10` : "--"}
           </span>
 
-          {open ? (
-            <ChevronUp />
-          ) : (
-            <ChevronDown />
-          )}
+          <span className="rounded-full border border-slate-200 bg-slate-50 p-2 text-slate-600">
+            {open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </span>
 
         </div>
 
       </button>
 
       {open && (
-        <div className="border-t p-6 space-y-6">
+        <div className="border-t border-slate-200 bg-slate-50/70 p-6 space-y-5">
 
           <Section
-            icon={<MessageSquare className="text-violet-600" />}
+            icon={<MessageSquare className="h-5 w-5 text-violet-600" />}
             title="Interview Question"
-            color="bg-slate-50"
+            color="bg-white"
             value={item.question}
           />
 
           <Section
-            icon={<CheckCircle2 className="text-green-600" />}
+            icon={<CheckCircle2 className="h-5 w-5 text-emerald-600" />}
             title="Expected Answer"
-            color="bg-green-50"
+            color="bg-emerald-50"
             value={item.correctAnswer}
           />
 
           <Section
-            icon={<CircleDashed className="text-blue-600" />}
+            icon={<CircleDashed className="h-5 w-5 text-blue-600" />}
             title="Your Answer"
             color="bg-blue-50"
             value={
@@ -122,7 +135,7 @@ export default function FeedbackAccordion({
           />
 
           <Section
-            icon={<Brain className="text-violet-700" />}
+            icon={<Brain className="h-5 w-5 text-violet-700" />}
             title="AI Feedback"
             color="bg-violet-50"
             value={
@@ -142,21 +155,26 @@ function Section({
   title,
   value,
   color,
-}: any) {
+}: {
+  icon: ReactNode;
+  title: string;
+  value: string;
+  color: string;
+}) {
   return (
-    <div className={`${color} rounded-xl p-5`}>
+    <div className={`${color} rounded-2xl border border-slate-200 p-5`}>
 
-      <div className="flex items-center gap-2 mb-3">
+      <div className="mb-3 flex items-center gap-2">
 
         {icon}
 
-        <h3 className="font-semibold">
+        <h3 className="font-semibold tracking-tight text-slate-900">
           {title}
         </h3>
 
       </div>
 
-      <p className="leading-8 text-gray-700">
+      <p className="whitespace-pre-wrap leading-7 text-slate-700">
         {value}
       </p>
 
