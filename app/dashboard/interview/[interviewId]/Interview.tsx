@@ -5,6 +5,7 @@ import QuestionCard from "@/components/ui/QuestionCard";
 
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
+import {useRouter} from "next/navigation";
 
 const RecordAnswer = dynamic(
   () => import("@/components/ui/RecordAnswer"),
@@ -14,12 +15,14 @@ const RecordAnswer = dynamic(
 );
 
 
+
 interface Props {
   questions: any[];
 }
 
 export default function Interview({ questions }: Props) {
   const [activeQuestion, setActiveQuestion] = useState(0);
+  const router = useRouter();
 
   return (
     <div className="max-w-7xl mx-auto p-10">
@@ -49,12 +52,21 @@ export default function Interview({ questions }: Props) {
           Previous
         </Button>
 
-        <Button
-          disabled={activeQuestion === questions.length - 1}
-          onClick={() => setActiveQuestion(activeQuestion + 1)}
-        >
-          Next
-        </Button>
+        {activeQuestion === questions.length - 1 ? (
+  <Button
+    onClick={() => {
+      router.push("/dashboard/interview/1/feedback");
+    }}
+  >
+    Finish Interview
+  </Button>
+) : (
+  <Button
+    onClick={() => setActiveQuestion(activeQuestion + 1)}
+  >
+    Next
+  </Button>
+)}
 
       </div>
     </div>
