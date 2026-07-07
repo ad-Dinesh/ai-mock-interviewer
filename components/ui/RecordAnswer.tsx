@@ -75,6 +75,7 @@ export default function RecordAnswer({
         userAnswer,
         feedback: data.feedback,
         rating: data.rating,
+        userEmail: user?.primaryEmailAddress?.emailAddress,
       }),
     });
   };

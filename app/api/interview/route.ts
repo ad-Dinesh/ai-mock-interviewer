@@ -31,7 +31,7 @@ export async function PUT(req: Request) {
       userAnswer: body.userAnswer,
       feedback: body.feedback,
       rating: body.rating,
-      userEmail: "test@gmail.com",
+      userEmail: body.userEmail,
     });
 
     return NextResponse.json({
