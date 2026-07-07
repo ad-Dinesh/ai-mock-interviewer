@@ -2,7 +2,7 @@
 
 import Webcam from "react-webcam";
 import { Button } from "@/components/ui/button";
-import { Mic, StopCircle } from "lucide-react";
+import { Mic, StopCircle, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import useSpeechToText from "react-hook-speech-to-text";
 import { useUser } from "@clerk/nextjs";
@@ -18,9 +18,11 @@ export default function RecordAnswer({
   correctAnswer,
   interviewId,
 }: Props) {
-  const [userAnswer, setUserAnswer] = useState("");
-
   const { user } = useUser();
+
+  const [userAnswer, setUserAnswer] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const {
     error,
@@ -34,6 +36,7 @@ export default function RecordAnswer({
     useLegacyResults: false,
   });
 
+  // Update transcript
   useEffect(() => {
     const transcript = results
       .map((result: any) => result.transcript)
@@ -42,79 +45,117 @@ export default function RecordAnswer({
     setUserAnswer(transcript);
   }, [results]);
 
+  // Save automatically after recording stops
+  useEffect(() => {
+    if (
+      !isRecording &&
+      userAnswer.trim() !== "" &&
+      !isSaved
+    ) {
+      saveAnswer();
+    }
+  }, [isRecording, userAnswer]);
+
   const saveAnswer = async () => {
-    if (!userAnswer) return;
+    try {
+      setIsSaving(true);
 
-    // Gemini Feedback API
-    const feedbackRes = await fetch("/api/feedback", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        question,
-        correctAnswer,
-        userAnswer,
-      }),
-    });
+      console.log("Saving Answer...");
 
-    const data = await feedbackRes.json();
+      // Gemini Feedback
+      const feedbackRes = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question,
+          correctAnswer,
+          userAnswer,
+        }),
+      });
 
-    console.log(data);
+      const data = await feedbackRes.json();
 
-    // Save into DB
-    await fetch("/api/interview", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        mockIdRef: interviewId,
-        question,
-        correctAnswer,
-        userAnswer,
-        feedback: data.feedback,
-        rating: data.rating,
-        userEmail: user?.primaryEmailAddress?.emailAddress,
-      }),
-    });
+      console.log("Gemini:", data);
+
+      // Save to DB
+      const saveRes = await fetch("/api/interview", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mockIdRef: interviewId,
+          question,
+          correctAnswer,
+          userAnswer,
+          feedback: data.feedback,
+          rating: data.rating,
+          userEmail: user?.primaryEmailAddress?.emailAddress,
+        }),
+      });
+
+      const saveData = await saveRes.json();
+
+      console.log("Saved:", saveData);
+
+      setIsSaved(true);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <div className="border rounded-xl p-5 flex flex-col items-center">
+
       <Webcam
-        audio={true}
+        audio
         mirrored
-        style={{
-          width: "100%",
-          borderRadius: "12px",
-        }}
+        className="rounded-xl w-full"
       />
 
-      <div className="w-full mt-5 p-3 border rounded-lg min-h-[100px] bg-gray-50">
+      <div className="w-full mt-5 p-4 border rounded-lg min-h-[120px] bg-gray-50">
+
         {results.map((result: any, index) => (
           <p key={index}>{result.transcript}</p>
         ))}
 
-        {error && <p className="text-red-500">{error}</p>}
+        {interimResult && (
+          <p className="text-gray-400">
+            {interimResult}
+          </p>
+        )}
 
-        <p className="text-gray-500">{interimResult}</p>
+        {error && (
+          <p className="text-red-500">
+            {error}
+          </p>
+        )}
+
       </div>
 
-      <p className="mt-4 text-sm">{userAnswer}</p>
-
       <Button
+        disabled={isSaving}
         className="mt-5 w-full"
-        onClick={async () => {
+        onClick={() => {
           if (isRecording) {
             stopSpeechToText();
-            await saveAnswer();
           } else {
+            setIsSaved(false);
+            setUserAnswer("");
             startSpeechToText();
           }
         }}
       >
-        {isRecording ? (
+        {isSaving ? (
+          <>
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            Saving...
+          </>
+        ) : isRecording ? (
           <>
             <StopCircle className="mr-2 h-5 w-5" />
             Stop Recording
@@ -126,6 +167,7 @@ export default function RecordAnswer({
           </>
         )}
       </Button>
+
     </div>
   );
 }

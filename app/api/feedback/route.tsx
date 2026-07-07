@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
-import { db } from "@/lib/db";
-import { UserAnswer } from "@/utils/schema";
+
 
 const ai = new GoogleGenAI({
     apiKey: process.env.GOOGLE_GEMINI_API_KEY!,
@@ -53,16 +52,7 @@ Return ONLY valid JSON.
 
         const result = JSON.parse(text);
 
-        // Save into Database
-        await db.insert(UserAnswer).values({
-            mockIdRef: interviewId,
-            question,
-            correctAnswer,
-            userAnswer,
-            feedback: result.feedback,
-            rating: result.rating,
-            userEmail,
-        });
+       
 
         return NextResponse.json(result);
     } catch (err) {
