@@ -3,9 +3,6 @@ import { UserAnswer } from "@/utils/schema";
 import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import FeedbackHero from "@/components/ui/FeedbackHero";
-import SummaryCard from "@/components/ui/SummaryCard";
-import FeedbackAccordion from "@/components/ui/FeedbackAccordion";
 
 import {
     ArrowLeft,
