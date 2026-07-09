@@ -14,8 +14,7 @@ export default function FeedbackHeader({
   const progress = Number(average) * 10;
 
   return (
-    <div className="rounded-3xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white shadow-xl p-8">
-
+<div className="rounded-3xl bg-violet-600 text-white shadow-xl p-8">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
 
         {/* Left */}
