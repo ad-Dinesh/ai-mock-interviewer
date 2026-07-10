@@ -5,12 +5,7 @@ import { desc } from "drizzle-orm";
 import AddNewInterview from "@/components/ui/AddNewInterview";
 import InterviewCard from "@/components/ui/InterviewCard";
 
-import {
-  Briefcase,
-  BrainCircuit,
-  FolderGit2,
-  Sparkles,
-} from "lucide-react";
+import { Briefcase, BrainCircuit, FolderGit2, Sparkles } from "lucide-react";
 
 export default async function Dashboard() {
   const interviews = await db
@@ -21,152 +16,108 @@ export default async function Dashboard() {
   const totalInterviews = interviews.length;
 
   const latestInterview =
-    interviews.length > 0
-      ? interviews[0].jobPosition
-      : "No Interviews";
+    interviews.length > 0 ? interviews[0].jobPosition : "No interviews";
 
   const latestExperience =
-    interviews.length > 0
-      ? interviews[0].jobExperience
-      : "0";
+    interviews.length > 0 ? interviews[0].jobExperience : "0";
+
+  const stats = [
+    {
+      icon: FolderGit2,
+      label: "Total interviews",
+      value: totalInterviews,
+    },
+    {
+      icon: Briefcase,
+      label: "Latest role",
+      value: latestInterview,
+    },
+    {
+      icon: BrainCircuit,
+      label: "Experience",
+      value: `${latestExperience} yrs`,
+    },
+    {
+      icon: Sparkles,
+      label: "AI status",
+      value: "Ready",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-slate-50">
-
-      <div className="max-w-7xl mx-auto px-6 py-10">
-
+      <div className="mx-auto max-w-6xl px-6 py-10">
         {/* Hero */}
+        <div className="relative overflow-hidden rounded-3xl bg-[#0B1220] p-8 sm:p-10">
+          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-indigo-600/30 blur-3xl" />
+          <div className="pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-amber-500/10 blur-3xl" />
 
-        <div className="rounded-3xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 p-10 text-white shadow-xl">
-
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-
-            <div>
-
-              <p className="uppercase tracking-widest text-violet-200 text-sm font-semibold">
-                AI MOCK INTERVIEW
+          <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-xl">
+              <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                AI mock interview
               </p>
-
-              <h1 className="text-4xl font-bold mt-3">
-                Welcome Back 👋
+              <h1 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Welcome back
               </h1>
-
-              <p className="text-violet-100 mt-4 max-w-2xl">
-                Practice interviews, improve your communication,
-                receive AI-powered feedback and prepare for your
-                dream job with confidence.
+              <p className="mt-3 text-base leading-relaxed text-slate-400">
+                Practice interviews, sharpen your communication, and get
+                AI-powered feedback to prepare for your dream job.
               </p>
-
             </div>
 
-            <div>
+            <div className="relative">
               <AddNewInterview />
             </div>
-
           </div>
-
         </div>
 
         {/* Stats */}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-8">
-
-          <div className="bg-white rounded-2xl shadow-sm border p-6">
-
-            <FolderGit2 className="h-8 w-8 text-violet-600 mb-4" />
-
-            <p className="text-gray-500 text-sm">
-              Total Interviews
-            </p>
-
-            <h2 className="text-3xl font-bold mt-1">
-              {totalInterviews}
-            </h2>
-
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-sm border p-6">
-
-            <Briefcase className="h-8 w-8 text-blue-600 mb-4" />
-
-            <p className="text-gray-500 text-sm">
-              Latest Role
-            </p>
-
-            <h2 className="text-xl font-bold mt-1 line-clamp-1">
-              {latestInterview}
-            </h2>
-
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-sm border p-6">
-
-            <BrainCircuit className="h-8 w-8 text-orange-500 mb-4" />
-
-            <p className="text-gray-500 text-sm">
-              Experience
-            </p>
-
-            <h2 className="text-3xl font-bold mt-1">
-              {latestExperience}
-              <span className="text-lg ml-1">yrs</span>
-            </h2>
-
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-sm border p-6">
-
-            <Sparkles className="h-8 w-8 text-green-600 mb-4" />
-
-            <p className="text-gray-500 text-sm">
-              AI Status
-            </p>
-
-            <h2 className="text-2xl font-bold mt-1 text-green-600">
-              Ready
-            </h2>
-
-          </div>
-
+        <div className="mt-6 grid grid-cols-2 gap-4 xl:grid-cols-4">
+          {stats.map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-2xl border border-slate-200 bg-white p-5"
+            >
+              <stat.icon className="h-5 w-5 text-slate-400" />
+              <p className="mt-4 text-xs uppercase tracking-wide text-slate-500">
+                {stat.label}
+              </p>
+              <p className="mt-1 truncate text-xl font-semibold text-slate-900">
+                {stat.value}
+              </p>
+            </div>
+          ))}
         </div>
 
         {/* Recent Interviews */}
-
         <div className="mt-12">
+          <div className="mb-6 flex items-center gap-3">
+            <h2 className="text-xl font-semibold text-slate-900">
+              Recent interviews
+            </h2>
+            <div className="h-px flex-1 bg-slate-200" />
+          </div>
 
-          <div className="flex items-center justify-between mb-6">
-
-            <div>
-
-              <h2 className="text-3xl font-bold">
-                Recent Interviews
-              </h2>
-
-              <p className="text-gray-500 mt-1">
-                Continue practicing and review your previous interviews.
+          {interviews.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-16 text-center">
+              <p className="text-lg font-semibold text-slate-900">
+                No interviews yet
               </p>
-
+              <p className="mt-2 text-sm text-slate-500">
+                Create your first mock interview to get started.
+              </p>
             </div>
-
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-
-            {interviews.map((interview) => (
-
-              <InterviewCard
-                key={interview.id}
-                interview={interview}
-              />
-
-            ))}
-
-          </div>
-
+          ) : (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {interviews.map((interview) => (
+                <InterviewCard key={interview.id} interview={interview} />
+              ))}
+            </div>
+          )}
         </div>
-
       </div>
-
     </div>
   );
 }
