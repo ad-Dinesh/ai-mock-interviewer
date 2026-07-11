@@ -110,7 +110,12 @@ export default async function Dashboard() {
               </p>
             </div>
           ) : (
-            <DashboardContent interviews={interviews} />
+            <DashboardContent
+  interviews={interviews}
+  totalInterviews={totalInterviews}
+  latestRole={latestInterview}
+  latestExperience={latestExperience}
+/>
           )}
         </div>
       </div>

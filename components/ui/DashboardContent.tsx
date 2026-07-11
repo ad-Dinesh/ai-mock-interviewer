@@ -6,11 +6,17 @@ import InterviewCard from "./InterviewCard";
 import SearchBar from "./SearchBar";
 
 interface Props {
-    interviews: any[];
+  interviews: any[];
+  totalInterviews: number;
+  latestRole: string;
+  latestExperience: string;
 }
 
 export default function DashboardContent({
     interviews,
+    totalInterviews,
+    latestRole,
+    latestExperience
 }: Props) {
     const [search, setSearch] = useState("");
     const [sortBy, setSortBy] = useState("newest");
@@ -84,6 +90,49 @@ export default function DashboardContent({
                     />
                 ))}
             </div>
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4 mb-8">
+
+  <div className="rounded-2xl border bg-white p-6 shadow-sm">
+    <p className="text-sm text-slate-500">
+      Total Interviews
+    </p>
+
+    <h2 className="mt-2 text-3xl font-bold">
+      {totalInterviews}
+    </h2>
+  </div>
+
+  <div className="rounded-2xl border bg-white p-6 shadow-sm">
+    <p className="text-sm text-slate-500">
+      Latest Role
+    </p>
+
+    <h2 className="mt-2 text-2xl font-bold">
+      {latestRole}
+    </h2>
+  </div>
+
+  <div className="rounded-2xl border bg-white p-6 shadow-sm">
+    <p className="text-sm text-slate-500">
+      Average Experience
+    </p>
+
+    <h2 className="mt-2 text-3xl font-bold">
+      {latestExperience} yrs
+    </h2>
+  </div>
+
+  <div className="rounded-2xl border bg-white p-6 shadow-sm">
+    <p className="text-sm text-slate-500">
+      AI Status
+    </p>
+
+    <h2 className="mt-2 text-2xl font-bold text-green-600">
+      Ready
+    </h2>
+  </div>
+
+</div>
           
         </>
     );
