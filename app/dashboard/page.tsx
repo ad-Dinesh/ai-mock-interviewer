@@ -3,8 +3,8 @@ import { MockInterview } from "@/utils/schema";
 import { desc } from "drizzle-orm";
 
 import AddNewInterview from "@/components/ui/AddNewInterview";
-import InterviewCard from "@/components/ui/InterviewCard";
-
+// import InterviewCard from "@/components/ui/InterviewCard";
+import DashboardContent from "@/components/ui/DashboardContent";
 import { Briefcase, BrainCircuit, FolderGit2, Sparkles } from "lucide-react";
 
 export default async function Dashboard() {
@@ -110,11 +110,7 @@ export default async function Dashboard() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {interviews.map((interview) => (
-                <InterviewCard key={interview.id} interview={interview} />
-              ))}
-            </div>
+            <DashboardContent interviews={interviews} />
           )}
         </div>
       </div>
