@@ -57,37 +57,39 @@ export default function QuestionBankCard({
               {interview.jobDesc}
             </p>
 
-            <div className="mt-4 flex items-center gap-6 text-sm text-slate-500">
+            <div className="mt-5 flex flex-wrap gap-3">
 
-              <span>
-                {questions.length} Questions
-              </span>
+              <div className="rounded-full bg-violet-50 px-4 py-2 text-sm font-medium text-violet-700">
 
-              <span>
-                {interview.jobExperience} Years Experience
-              </span>
+                📄 {questions.length} Questions
 
-              <span className="flex items-center gap-1">
+              </div>
 
-                <CalendarDays className="h-4 w-4" />
+              <div className="rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700">
 
-                {formattedDate}
+                💼 {interview.jobExperience} Years
 
-              </span>
+              </div>
+
+              <div className="rounded-full bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700">
+
+                📅 {formattedDate}
+
+              </div>
 
             </div>
 
           </div>
 
-          <button>
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 transition group-hover:bg-violet-100">
 
-            {open ? (
-              <ChevronUp className="h-6 w-6" />
-            ) : (
-              <ChevronDown className="h-6 w-6" />
-            )}
+  {open ? (
+    <ChevronUp className="h-5 w-5 text-violet-700" />
+  ) : (
+    <ChevronDown className="h-5 w-5 text-slate-700" />
+  )}
 
-          </button>
+</div>
 
         </div>
 

@@ -7,6 +7,7 @@ import {
   CircleHelp,
   CheckCircle2,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   index: number;
@@ -57,23 +58,32 @@ export default function QuestionAccordion({
       {/* Answer */}
 
       {open && (
-        <div className="border-t bg-slate-50 px-5 py-4">
+        <div className="border-t bg-gradient-to-r from-violet-50 to-indigo-50 px-5 py-4">
 
-          <div className="flex items-start gap-3">
+          <div className="w-full">
 
-            <CheckCircle2 className="mt-1 h-5 w-5 text-green-600" />
+            <div className="flex items-center justify-between mb-3">
 
-            <div>
-              <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-green-700">
-                Recommended Answer
+              <p className="text-sm font-semibold uppercase tracking-wide text-green-700">
+                AI Recommended Answer
               </p>
 
-              <p className="leading-7 text-slate-700">
-                {answer}
-              </p>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => navigator.clipboard.writeText(answer)}
+              >
+                Copy
+              </Button>
+
             </div>
 
+            <p className="leading-7 text-slate-700">
+              {answer}
+            </p>
+
           </div>
+
 
         </div>
       )}
