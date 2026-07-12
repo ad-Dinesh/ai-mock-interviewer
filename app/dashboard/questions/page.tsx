@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { MockInterview } from "@/utils/schema";
 import { desc } from "drizzle-orm";
 
-import QuestionBankCard from "@/components/ui/QuestionBankCard";
+import QuestionsContent from "@/components/ui/QuestionsContent";
 
 export default async function QuestionsPage() {
   const interviews = await db
@@ -51,18 +51,7 @@ export default async function QuestionsPage() {
 
         ) : (
 
-          <div className="space-y-8">
-
-            {interviews.map((interview) => (
-
-              <QuestionBankCard
-                key={interview.id}
-                interview={interview}
-              />
-
-            ))}
-
-          </div>
+          <QuestionsContent interviews={interviews} />
 
         )}
 
