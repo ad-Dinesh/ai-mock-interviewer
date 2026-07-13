@@ -7,6 +7,7 @@ import { UserButton } from "@clerk/nextjs";
 import { BrainCircuit, Menu, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import AddNewInterview from "@/components/ui/AddNewInterview";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
@@ -71,16 +72,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button
-            asChild
-            size="sm"
-            className="hidden bg-violet-600 font-semibold text-white shadow-sm hover:bg-violet-700 sm:inline-flex"
-          >
-            <Link href="/dashboard/new">
-              <Plus className="size-4" aria-hidden="true" />
-              Create Interview
-            </Link>
-          </Button>
+          
 
           <div className="hidden md:block">
             <UserButton />
