@@ -7,7 +7,6 @@ import { UserButton } from "@clerk/nextjs";
 import { BrainCircuit, Menu, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import AddNewInterview from "@/components/ui/AddNewInterview";
 
 const links = [
   { href: "/dashboard", label: "Dashboard" },
@@ -77,6 +76,7 @@ export default function Navbar() {
           <div className="hidden md:block">
             <UserButton />
           </div>
+          
 
           <Button
             type="button"
