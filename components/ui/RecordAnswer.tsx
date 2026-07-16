@@ -6,6 +6,7 @@ import { Mic, StopCircle, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import useSpeechToText from "react-hook-speech-to-text";
 import { useUser } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 interface Props {
   question: string;
@@ -57,10 +58,15 @@ export default function RecordAnswer({
   }, [isRecording, userAnswer]);
 
   const saveAnswer = async () => {
+    if (!userAnswer.trim()) {
+      toast.error("Please record an answer first");
+      return;
+    }
+
+    const toastId = toast.loading("Saving your answer...");
+
     try {
       setIsSaving(true);
-
-      console.log("Saving Answer...");
 
       // Gemini Feedback
       const feedbackRes = await fetch("/api/feedback", {
@@ -75,9 +81,11 @@ export default function RecordAnswer({
         }),
       });
 
-      const data = await feedbackRes.json();
+      if (!feedbackRes.ok) {
+        throw new Error("Failed to get feedback");
+      }
 
-      console.log("Gemini:", data);
+      const data = await feedbackRes.json();
 
       // Save to DB
       const saveRes = await fetch("/api/interview", {
@@ -96,13 +104,18 @@ export default function RecordAnswer({
         }),
       });
 
+      if (!saveRes.ok) {
+        throw new Error("Failed to save answer");
+      }
+
       const saveData = await saveRes.json();
 
-      console.log("Saved:", saveData);
-
+      toast.dismiss(toastId);
+      toast.success("Answer saved successfully!");
       setIsSaved(true);
     } catch (err) {
-      console.log(err);
+      toast.dismiss(toastId);
+      toast.error(err instanceof Error ? err.message : "Failed to save answer");
     } finally {
       setIsSaving(false);
     }
