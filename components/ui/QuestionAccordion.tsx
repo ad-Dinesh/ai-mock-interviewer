@@ -8,6 +8,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface Props {
   index: number;
@@ -71,7 +72,10 @@ export default function QuestionAccordion({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => navigator.clipboard.writeText(answer)}
+                onClick={() => {
+                  navigator.clipboard.writeText(answer);
+                  toast.success("Answer copied to clipboard!");
+                }}
               >
                 Copy
               </Button>
