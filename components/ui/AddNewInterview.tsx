@@ -9,6 +9,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,35 +25,62 @@ export default function AddNewInterview() {
     const [experience, setExperience] = useState("");
 
    const onGenerate = async () => {
-  const FINAL_PROMPT = INTERVIEW_PROMPT
-    .replace("{jobPosition}", jobPosition)
-    .replace("{jobDescription}", jobDesc)
-    .replace("{jobExperience}", experience);
+  if (!jobPosition.trim() || !jobDesc.trim() || !experience.trim()) {
+    toast.error("Please fill in all fields");
+    return;
+  }
 
-  const response = await fetch("/api/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      prompt: FINAL_PROMPT,
-    }),
-  });
+  const toastId = toast.loading("Generating interview questions...");
 
-  const data = await response.json();
+  try {
+    const FINAL_PROMPT = INTERVIEW_PROMPT
+      .replace("{jobPosition}", jobPosition)
+      .replace("{jobDescription}", jobDesc)
+      .replace("{jobExperience}", experience);
 
-await fetch("/api/interview", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    jobPosition,
-    jobDesc,
-    experience,
-    jsonMockResp: data.result,
-  }),
-});
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt: FINAL_PROMPT,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to generate questions");
+    }
+
+    const data = await response.json();
+
+    const interviewResponse = await fetch("/api/interview", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jobPosition,
+        jobDesc,
+        experience,
+        jsonMockResp: data.result,
+      }),
+    });
+
+    if (!interviewResponse.ok) {
+      throw new Error("Failed to create interview");
+    }
+
+    toast.dismiss(toastId);
+    toast.success("Interview created successfully!");
+    setOpen(false);
+    setJobPosition("");
+    setJobDesc("");
+    setExperience("");
+  } catch (error) {
+    toast.dismiss(toastId);
+    toast.error(error instanceof Error ? error.message : "Something went wrong");
+  }
 };
 
 
