@@ -15,7 +15,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Trash2, Loader2 } from "lucide-react";
-
+import { toast } from "sonner";
 interface Props {
   interviewId: number;
 }
@@ -26,8 +26,11 @@ export default function DeleteInterviewDialog({
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const deleteInterview = async () => {
+    const toastId = toast.loading("Deleting interview...");
+    
     try {
       setLoading(true);
 
@@ -38,20 +41,30 @@ export default function DeleteInterviewDialog({
         }
       );
 
+      if (!res.ok) {
+        throw new Error("Failed to delete interview");
+      }
+
       const data = await res.json();
 
       if (data.success) {
+        toast.dismiss(toastId);
+        toast.success("Interview deleted successfully!");
+        setOpen(false);
         router.refresh();
+      } else {
+        throw new Error(data.message || "Failed to delete interview");
       }
     } catch (err) {
-      console.log(err);
+      toast.dismiss(toastId);
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
           variant="destructive"
