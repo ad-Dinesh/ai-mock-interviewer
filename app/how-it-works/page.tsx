@@ -1,12 +1,9 @@
 import Link from "next/link";
 import {
   Mic,
-  FileText,
   Brain,
   BarChart3,
-  CheckCircle2,
   ArrowRight,
-  Clock,
   RotateCcw,
   Target,
 } from "lucide-react";
@@ -94,7 +91,7 @@ export default function HowItWorksPage() {
                     AI
                   </div>
                   <div className="rounded-2xl rounded-tl-sm bg-[#F7F5FF] px-4 py-2.5 text-sm leading-relaxed text-[#3A3450]">
-                    Tell me about a time you disagreed with a teammate's
+                    Tell me about a time you disagreed with a teammate&apos;s
                     technical decision.
                   </div>
                 </div>
@@ -214,7 +211,7 @@ export default function HowItWorksPage() {
             </h2>
             <p className="mt-3 text-[15px] leading-relaxed text-[#B7ADD6]">
               Set a role, get matched questions, and see exactly where to
-              improve — before it's the real thing.
+              improve — before it is the real thing.
             </p>
           </div>
           <Link
@@ -241,7 +238,7 @@ const steps = [
     number: "02",
     title: "Get tailored questions",
     description:
-      "The AI generates a question set from your role and past history, mixing familiar patterns with ones you haven't seen yet.",
+      "The AI generates a question set from your role and past history, mixing familiar patterns with ones you haven’t seen yet.",
   },
   {
     number: "03",
@@ -253,7 +250,7 @@ const steps = [
     number: "04",
     title: "Review scored feedback",
     description:
-      "Each answer is scored on structure, clarity, and specifics, with a rewritten sample answer so you know what 'better' looks like.",
+      "Each answer is scored on structure, clarity, and specifics, with a rewritten sample answer so you know what “better” looks like.",
   },
 ];
 

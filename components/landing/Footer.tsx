@@ -1,10 +1,6 @@
 import Link from "next/link";
-import {
-  Github,
-  Linkedin,
-  Mail,
-  BrainCircuit,
-} from "lucide-react";
+import { Mail, BrainCircuit } from "lucide-react";
+import { FaGithub, FaLinkedin } from "react-icons/fa"; 
 
 const quickLinks = [
   {
@@ -72,7 +68,7 @@ export default function Footer() {
                 target="_blank"
               >
                 <div className="rounded-xl border border-white/10 p-3 text-slate-400 transition hover:border-violet-500 hover:text-white">
-                  <Github className="h-5 w-5" />
+                  <FaGithub className="h-5 w-5" />
                 </div>
               </Link>
 
@@ -81,7 +77,7 @@ export default function Footer() {
                 target="_blank"
               >
                 <div className="rounded-xl border border-white/10 p-3 text-slate-400 transition hover:border-violet-500 hover:text-white">
-                  <Linkedin className="h-5 w-5" />
+                  <FaLinkedin className="h-5 w-5" />
                 </div>
               </Link>
 
